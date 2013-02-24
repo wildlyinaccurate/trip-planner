@@ -23,3 +23,6 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
       }
 
       $scope.$apply()
+    , (error) ->
+      $scope.locationError = error
+      $scope.$apply()
