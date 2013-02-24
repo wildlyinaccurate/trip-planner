@@ -1,0 +1,18 @@
+{
+  "name": "angular-google-maps",
+  "version": "0.0.0",
+  "main": "./src/angular-google-maps.js",
+  "dependencies": {
+    "angular": "683afc7e2aea6bbad5baa3ce1e59216d"
+  },
+  "gitHead": "3d2c3842502f559eea4d8850ba17485acc01ba4b",
+  "readme": "angular-google-maps\n===================\n\nAngularJS directives for the Google Maps Javascript API",
+  "readmeFilename": "README.md",
+  "_id": "angular-google-maps@1.0.0",
+  "description": "angular-google-maps ===================",
+  "commit": "3d2c3842502f559eea4d8850ba17485acc01ba4b",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nlaplante/angular-google-maps.git"
+  }
+}

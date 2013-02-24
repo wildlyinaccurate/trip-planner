@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Trip Planner</title>
+        <meta name="description" content=""/>
+        <meta name="viewport" content="width=device-width"/>
+        <link rel="stylesheet" href="styles/main.css"/>
+    </head>
+    <body ng-app="tripPlannerApp">
+
+        <!--[if lt IE 9]>
+            <!-- build:js scripts/old-browsers.js -->
+            <script src="scripts/vendor/es5-shim.min.js"></script>
+            <script src="scripts/vendor/json3.min.js"></script>
+            <!-- endbuild -->
+        <![endif]-->
+
+        <div class="container" ng-controller="mainController">
+            <div class="google-map" center="center" draggable="true" zoom="zoom" markers="markers" mark-click="true"></div>
+        </div>
+
+        <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT0HWtijf7Rrp2roAnEqQCdiOTnIA49UM&sensor=true">
+    </script>
+
+        <!-- build:js scripts/scripts.js -->
+        <script src="components/angular/angular.js"></script>
+        <script src="components/angular-google-maps/src/angular-google-maps.js"></script>
+
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
+        <!-- endbuild -->
+
+        <script>
+            var _gaq=[['_setAccount','UA-38765839-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
