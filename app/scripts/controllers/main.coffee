@@ -5,12 +5,10 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
   angular.extend $scope, {
     zoom: 10,
     center: {
-      lat: 0,
+      lat: 50,
       lng: 0,
     },
-    markers: [],
-    latitude: 0,
-    longitude: 0
+    markers: []
   }
 
   $scope.geolocationAvailable = !!navigator.geolocation
@@ -26,7 +24,3 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
     , (error) ->
       $scope.locationError = error
       $scope.$apply()
-
-  $scope.$watch 'latitude + longitude', (newValue, oldValue) ->
-    $scope.markers.push [$scope.latitude, $scope.longitude]
-  , true
