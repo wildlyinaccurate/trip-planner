@@ -1,38 +1,36 @@
 'use strict'
 
-angular.module('tripPlannerApp', ['google-maps', 'tripPlannerApp.services']).controller 'mainController', ($scope, reverseGeocoder) ->
-
-  $scope.map = {
-    zoom: 10,
-    center: {
-      lat: 50,
-      lng: 0,
-    },
-    markers: []
-  }
+angular.module('tripPlannerApp', ['ui', 'tripPlannerApp.services']).controller 'mainController', ($scope, reverseGeocoder) ->
 
   $scope.alerts = []
+  $scope.markers = []
 
-  $scope.$watch 'map.markers.length', ->
-    for marker in $scope.map.markers
-      continue if marker.location
+  $scope.mapOptions = {
+    center: new google.maps.LatLng(50, 0),
+    zoom: 10,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
 
-      promise = reverseGeocoder.getLocation(marker.getPosition())
+  $scope.addMarker = ($event) ->
+    marker = new google.maps.Marker({
+      map: $scope.map,
+      position: $event.latLng
+    })
 
-      promise.then (results) ->
-        marker.location = results.shift()
-      , (reason) ->
-        $scope.alerts.push "Unable to reverse geocode marker. #{reason}"
+    $scope.markers.push marker
+
+    promise = reverseGeocoder.getLocation(marker.getPosition())
+
+    promise.then (results) ->
+      marker.location = results.shift()
+    , (reason) ->
+      $scope.alerts.push "Unable to reverse geocode marker. #{reason}"
 
   $scope.geolocationAvailable = !!navigator.geolocation
 
   if ($scope.geolocationAvailable)
     navigator.geolocation.getCurrentPosition (position) ->
-      $scope.map.center = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }
-
+      $scope.map.panTo new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
       $scope.$apply()
     , (error) ->
       $scope.alerts.push "We weren't able to determine your current location."

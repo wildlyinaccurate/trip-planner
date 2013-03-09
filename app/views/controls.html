@@ -5,7 +5,9 @@
         <li class="error">{{alert}}</li>
     </ul>
 
-    <ul ui-sortable ng-model="map.markers">
-        <li ng-repeat="marker in map.markers">{{marker.location.formatted_address}}</li>
+    <ul ui-sortable ng-model="markers">
+        <li ng-repeat="marker in markers">
+            {{marker.location.formatted_address}}
+        </li>
     </ul>
 </div>
