@@ -1,5 +1,7 @@
 <div class="controls">
     <h1>Trip Planner</h1>
 
-    <p class="error" ng-show="locationError">We weren't able to determine your current location.</p>
+    <ul ng-repeat="alert in alerts">
+        <li class="error">{{alert}}</li>
+    </ul>
 </div>

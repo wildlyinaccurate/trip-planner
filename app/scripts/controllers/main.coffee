@@ -11,6 +11,8 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
     markers: []
   }
 
+  $scope.alerts = []
+
   $scope.geolocationAvailable = !!navigator.geolocation
 
   if ($scope.geolocationAvailable)
@@ -22,5 +24,5 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
 
       $scope.$apply()
     , (error) ->
-      $scope.locationError = error
+      $scope.alerts.push "We weren't able to determine your current location."
       $scope.$apply()
