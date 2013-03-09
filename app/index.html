@@ -15,13 +15,14 @@
 
         <!--[if lt IE 9]>
             <!-- build:js scripts/old-browsers.js -->
+            <script src="components/html5shiv/dist/html5shiv.js"></script>
             <script src="scripts/vendor/es5-shim.min.js"></script>
             <script src="scripts/vendor/json3.min.js"></script>
             <!-- endbuild -->
         <![endif]-->
 
         <div class="container" ng-controller="mainController">
-            <div class="google-map" center="map.center" draggable="true" zoom="map.zoom" markers="map.markers"></div>
+            <div class="google-map" ui-map="map" ui-options="mapOptions" ui-event="{'map-click': 'addMarker($event)'}"></div>
 
             <div ng-include="'views/controls.html'"></div>
         </div>
@@ -31,12 +32,18 @@
     </script>
 
         <!-- build:js scripts/scripts.js -->
+        <script src="components/jquery/jquery.js"></script>
+
+        <script src="components/jquery-ui/ui/jquery.ui.core.js"></script>
+        <script src="components/jquery-ui/ui/jquery.ui.widget.js"></script>
+        <script src="components/jquery-ui/ui/jquery.ui.mouse.js"></script>
+        <script src="components/jquery-ui/ui/jquery.ui.sortable.js"></script>
+
         <script src="components/angular/angular.js"></script>
+        <script src="components/angular-ui/build/angular-ui.js"></script>
 
         <script src="scripts/app.js"></script>
-        <script src="scripts/providers/google-map.js"></script>
         <script src="scripts/services/reverse-geocoder.js"></script>
-        <script src="scripts/directives/google-maps.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <!-- endbuild -->
 
