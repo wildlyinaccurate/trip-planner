@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', ($scope) ->
+angular.module('tripPlannerApp', ['google-maps', 'tripPlannerApp.services']).controller 'mainController', ($scope, reverseGeocoder) ->
 
   $scope.map = {
     zoom: 10,
@@ -12,6 +12,17 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
   }
 
   $scope.alerts = []
+
+  $scope.$watch 'map.markers.length', ->
+    for marker in $scope.map.markers
+      continue if marker.location
+
+      promise = reverseGeocoder.getLocation(marker.getPosition())
+
+      promise.then (results) ->
+        marker.location = results.shift()
+      , (reason) ->
+        $scope.alerts.push "Unable to reverse geocode marker. #{reason}"
 
   $scope.geolocationAvailable = !!navigator.geolocation
 

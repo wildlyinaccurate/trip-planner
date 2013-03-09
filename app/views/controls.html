@@ -4,4 +4,8 @@
     <ul ng-repeat="alert in alerts">
         <li class="error">{{alert}}</li>
     </ul>
+
+    <ul ui-sortable ng-model="map.markers">
+        <li ng-repeat="marker in map.markers">{{marker.location.formatted_address}}</li>
+    </ul>
 </div>
