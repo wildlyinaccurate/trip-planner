@@ -2,7 +2,7 @@
 
 angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', ($scope) ->
 
-  angular.extend $scope, {
+  $scope.map = {
     zoom: 10,
     center: {
       lat: 50,
@@ -15,7 +15,7 @@ angular.module('tripPlannerApp', ['google-maps']).controller 'mainController', (
 
   if ($scope.geolocationAvailable)
     navigator.geolocation.getCurrentPosition (position) ->
-      $scope.center = {
+      $scope.map.center = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       }
