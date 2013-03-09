@@ -1,11 +1,5 @@
 'use strict'
 
-# Check if 2 floating point numbers are equal
-#
-# @see http://stackoverflow.com/a/588014
-floatEqual = (f1, f2) ->
-  (Math.abs(f1 - f2) < 0.000001)
-
 angular.module('google-maps', []).directive 'googleMap', ($log, $timeout) ->
   {
     priority: 100,
@@ -34,7 +28,6 @@ angular.module('google-maps', []).directive 'googleMap', ($log, $timeout) ->
       })
 
       scope.$watch 'center', (newValue, oldValue) ->
-        if !floatEqual(newValue.lat, oldValue.lat) or !floatEqual(newValue.lng, oldValue.lng)
           map.setCenter newValue
       , true
 
@@ -50,5 +43,10 @@ angular.module('google-maps', []).directive 'googleMap', ($log, $timeout) ->
             scope.zoom = map.zoom
 
       map.on 'click', (event) ->
-        map.addMarker(event.latLng.lat(), event.latLng.lng())
+        marker = map.addMarker event.latLng.lat(), event.latLng.lng()
+
+        if marker
+          $timeout ->
+            scope.$apply ->
+              scope.markers.push marker;
   }
