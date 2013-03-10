@@ -20,7 +20,7 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
   # Default directions mode
   $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
 
-  updateDirections = () ->
+  $scope.updateDirections = ->
     return unless $scope.markers.length >= 2
 
     promise = directionsService.getDirections $scope.markers, {
@@ -47,10 +47,9 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
     , (reason) ->
       $scope.alerts.push "Unable to reverse geocode marker. #{reason}"
 
-    updateDirections()
+    $scope.updateDirections()
 
-  $scope.$watch 'directionsMode.value', ->
-    updateDirections()
+  $scope.$watch 'directionsMode.value', $scope.updateDirections
 
   $scope.$watch 'map', (newValue) ->
     directionsDisplay.setMap newValue
