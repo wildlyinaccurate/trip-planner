@@ -273,10 +273,8 @@ module.exports = function (grunt) {
         'compass:dist',
         'useminPrepare',
         'imagemin',
-        'htmlmin',
         'concat',
         'cssmin',
-        'uglify',
         'copy',
         'usemin'
     ]);
