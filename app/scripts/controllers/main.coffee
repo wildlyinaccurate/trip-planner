@@ -7,7 +7,7 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
 
   $scope.mapOptions = {
     center: new google.maps.LatLng(50, 0),
-    zoom: 10,
+    zoom: 9,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   }
 
