@@ -1,6 +1,6 @@
 'use strict'
 
-tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder) ->
+tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directionsService) ->
 
   $scope.alerts = []
   $scope.markers = []
