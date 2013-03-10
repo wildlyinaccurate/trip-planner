@@ -1,3 +1,5 @@
+$controls-vertical-padding: 8px;
+
 .controls {
   background: $component-background;
   position: absolute;
@@ -5,5 +7,6 @@
   top: 0;
   left: auto !important; // Prevents jQuery UI ruining the layout while resizing
   width: 22%;
-  padding: 8px 12px;
+  padding: $controls-vertical-padding 12px;
+  @include calc(height, "100% - " + $controls-vertical-padding * 2)
 }
