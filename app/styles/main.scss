@@ -1,8 +1,10 @@
-@import "compass";
 @import "variables";
+
+@import "compass";
+@import "../components/font-awesome/sass/font-awesome.scss";
+
 @import "components/reset";
 @import "components/layout";
 @import "components/map";
 @import "components/controls";
 @import "components/destinations";
-

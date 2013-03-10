@@ -1,7 +1,8 @@
 <h3>Your destinations</h3>
 
 <ul class="destinations" ui-sortable="{ update: updateDirections }" ng-model="markers">
-    <li ng-repeat="marker in markers">
+    <li class="destination" ng-repeat="(index, marker) in markers">
+        <i class="icon icon-remove" ng-click="removeMarker(index)"></i>
         {{marker.location.formatted_address}}
     </li>
 </ul>

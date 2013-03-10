@@ -54,6 +54,12 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
 
     $scope.updateDirections()
 
+  $scope.removeMarker = (index) ->
+    marker = $scope.markers.splice(index, 1)[0]
+    marker.setMap null
+
+    $scope.updateDirections()
+
   $scope.$watch 'directionsMode.value', $scope.updateDirections
 
   $scope.$watch 'map', (newValue) ->

@@ -2,12 +2,25 @@
   list-style: none;
   padding: 0;
 
-  li {
+  .destination {
     margin: 6px 0;
     padding: 6px 10px;
     cursor: move;
     color: $destination-font-colour;
     background: $destination-background;
     @include border-radius(4px);
+  }
+
+  .icon {
+    float: right;
+    margin-left: 6px;
+    padding: 3px 2px;
+    cursor: pointer;
+    @include border-radius(4px);
+  }
+
+  .icon:hover {
+    color: $destination-background;
+    background: $destination-font-colour;
   }
 }
