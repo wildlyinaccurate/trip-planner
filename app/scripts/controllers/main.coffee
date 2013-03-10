@@ -1,6 +1,6 @@
 'use strict'
 
-tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directionsService) ->
+tripPlannerApp.controller 'mainController', ($scope, $timeout, reverseGeocoder, directionsService) ->
 
   $scope.alerts = []
   $scope.markers = []
@@ -23,19 +23,20 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
   $scope.updateDirections = ->
     return unless $scope.markers.length >= 2
 
-    promise = directionsService.getDirections $scope.markers, {
-      travelMode: $scope.directionsMode.value
-    }
+    $timeout ->
+      promise = directionsService.getDirections $scope.markers, {
+        travelMode: $scope.directionsMode.value
+      }
 
-    promise.then (result) ->
-      # Hide the first & last markers so that the "A" & "B" directions markers are visible
-      marker.setVisible true for marker in $scope.markers
-      $scope.markers[0].setVisible false
-      $scope.markers[$scope.markers.length - 1].setVisible false
+      promise.then (result) ->
+        # Hide the first & last markers so that the "A" & "B" directions markers are visible
+        marker.setVisible true for marker in $scope.markers
+        $scope.markers[0].setVisible false
+        $scope.markers[$scope.markers.length - 1].setVisible false
 
-      directionsDisplay.setDirections result
-    , (reason) ->
-      $scope.alerts.push "Unable to get directions. #{reason}"
+        directionsDisplay.setDirections result
+      , (reason) ->
+        $scope.alerts.push "Unable to get directions. #{reason}"
 
   $scope.addMarker = ($event) ->
     marker = new google.maps.Marker({
