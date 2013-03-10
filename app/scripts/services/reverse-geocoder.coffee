@@ -16,5 +16,5 @@ class ReverseGeocoder
 
     deferred.promise
 
-angular.module('tripPlannerApp.services', []).factory 'reverseGeocoder', ($timeout, $q) ->
+tripPlannerApp.factory 'reverseGeocoder', ($timeout, $q) ->
   new ReverseGeocoder($q, $timeout)

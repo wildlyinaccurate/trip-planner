@@ -1,3 +1,3 @@
 'use strict'
 
-angular.module('tripPlannerApp', [])
+window.tripPlannerApp = angular.module('tripPlannerApp', ['ui'])

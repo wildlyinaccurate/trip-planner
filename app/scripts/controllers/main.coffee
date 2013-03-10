@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('tripPlannerApp', ['ui', 'tripPlannerApp.services']).controller 'mainController', ($scope, reverseGeocoder) ->
+tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder) ->
 
   $scope.alerts = []
   $scope.markers = []
