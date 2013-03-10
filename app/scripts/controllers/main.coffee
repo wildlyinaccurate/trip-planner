@@ -54,9 +54,7 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
   $scope.$watch 'map', (newValue) ->
     directionsDisplay.setMap newValue
 
-  $scope.geolocationAvailable = !!navigator.geolocation
-
-  if ($scope.geolocationAvailable)
+  if (navigator.geolocation)
     navigator.geolocation.getCurrentPosition (position) ->
       $scope.map.panTo new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
       $scope.$apply()
