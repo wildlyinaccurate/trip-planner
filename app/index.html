@@ -10,7 +10,10 @@
         <meta name="description" content=""/>
         <meta name="viewport" content="width=device-width"/>
         <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu"/>
+        <!-- build:css styles/main.css -->
+        <link rel="stylesheet" href="components/jquery-ui/themes/ui-lightness/jquery-ui.css"/>
         <link rel="stylesheet" href="styles/main.css"/>
+        <!-- endbuild -->
     </head>
     <body ng-app="tripPlannerApp">
 
@@ -25,7 +28,7 @@
         <div class="container" ng-controller="mainController">
             <div class="google-map" ui-map="map" ui-options="mapOptions" ui-event="{'map-click': 'addMarker($event)'}"></div>
 
-            <div class="controls">
+            <div class="controls" resizable="{ handles: 'w' }">
                 <h1>Trip Planner</h1>
 
                 <ul ng-repeat="alert in alerts">
@@ -47,6 +50,7 @@
         <script src="components/jquery-ui/ui/jquery.ui.core.js"></script>
         <script src="components/jquery-ui/ui/jquery.ui.widget.js"></script>
         <script src="components/jquery-ui/ui/jquery.ui.mouse.js"></script>
+        <script src="components/jquery-ui/ui/jquery.ui.resizable.js"></script>
         <script src="components/jquery-ui/ui/jquery.ui.sortable.js"></script>
 
         <script src="components/angular/angular.js"></script>
@@ -56,6 +60,7 @@
         <script src="components/angular-ui/modules/directives/sortable/sortable.js"></script>
 
         <script src="scripts/app.js"></script>
+        <script src="scripts/directives/resizable.js"></script>
         <script src="scripts/services/reverse-geocoder.js"></script>
         <script src="scripts/services/directions-service.js"></script>
         <script src="scripts/controllers/main.js"></script>
