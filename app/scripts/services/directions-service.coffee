@@ -36,7 +36,6 @@ class DirectionsService
     @directions.route options, (results, status) =>
       @$timeout ->
         if status == google.maps.DirectionsStatus.OK
-          console.log results
           deferred.resolve results
         else
           deferred.reject status
