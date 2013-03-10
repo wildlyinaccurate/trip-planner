@@ -154,7 +154,7 @@ module.exports = function (grunt) {
         /*concat: {
             dist: {}
         },*/
-        
+
         uglify: {
             dist: {
                 files: {
@@ -227,7 +227,9 @@ module.exports = function (grunt) {
                     dest: '<%= yeoman.dist %>',
                     src: [
                         '*.{ico,txt}',
-                        '.htaccess'
+                        '.htaccess',
+                        '**/*.html',
+                        '**/*.{woff,ttf,otf,eot,svg}'
                     ]
                 }]
             }
