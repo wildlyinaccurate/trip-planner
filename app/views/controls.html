@@ -5,6 +5,11 @@
         <li class="error">{{alert}}</li>
     </ul>
 
+    <label>
+        Directions mode
+        <select ng-model="directionsMode.value" ng-options="name for (name, value) in directionsModes"></select>
+    </label>
+
     <ul ui-sortable ng-model="markers">
         <li ng-repeat="marker in markers">
             {{marker.location.formatted_address}}

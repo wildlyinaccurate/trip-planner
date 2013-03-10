@@ -11,6 +11,27 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder) ->
     mapTypeId: google.maps.MapTypeId.ROADMAP
   }
 
+  $scope.directionsModes = directionsService.directionsModes
+
+  directionsDisplay = new google.maps.DirectionsRenderer({
+    preserveViewport: true
+  })
+
+  # Default directions mode
+  $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
+
+  updateDirections = () ->
+    return unless $scope.markers.length >= 2
+
+    promise = directionsService.getDirections $scope.markers, {
+      travelMode: $scope.directionsMode.value
+    }
+
+    promise.then (result) ->
+      directionsDisplay.setDirections result
+    , (reason) ->
+      $scope.alerts.push "Unable to get directions. #{reason}"
+
   $scope.addMarker = ($event) ->
     marker = new google.maps.Marker({
       map: $scope.map,
@@ -19,12 +40,20 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder) ->
 
     $scope.markers.push marker
 
-    promise = reverseGeocoder.getLocation(marker.getPosition())
+    promise = reverseGeocoder.getLocation marker.getPosition()
 
     promise.then (results) ->
       marker.location = results.shift()
     , (reason) ->
       $scope.alerts.push "Unable to reverse geocode marker. #{reason}"
+
+    updateDirections()
+
+  $scope.$watch 'directionsMode.value', ->
+    updateDirections()
+
+  $scope.$watch 'map', (newValue) ->
+    directionsDisplay.setMap newValue
 
   $scope.geolocationAvailable = !!navigator.geolocation
 
