@@ -25,7 +25,16 @@
         <div class="container" ng-controller="mainController">
             <div class="google-map" ui-map="map" ui-options="mapOptions" ui-event="{'map-click': 'addMarker($event)'}"></div>
 
-            <div ng-include="'views/controls.html'"></div>
+            <div class="controls">
+                <h1>Trip Planner</h1>
+
+                <ul ng-repeat="alert in alerts">
+                    <li class="error">{{alert}}</li>
+                </ul>
+
+                <div ng-include="'views/settings.html'"></div>
+                <div ng-include="'views/destinations.html'"></div>
+            </div>
         </div>
 
         <script type="text/javascript"

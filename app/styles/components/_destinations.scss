@@ -1,0 +1,13 @@
+.destinations {
+  list-style: none;
+  padding: 0;
+
+  li {
+    margin: 6px 0;
+    padding: 6px 10px;
+    cursor: move;
+    color: $destination-font-colour;
+    background: $destination-background;
+    @include border-radius(4px);
+  }
+}

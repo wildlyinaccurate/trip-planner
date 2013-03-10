@@ -1,0 +1,7 @@
+<h3>Your destinations</h3>
+
+<ul class="destinations" ui-sortable="{ update: updateDirections }" ng-model="markers">
+    <li ng-repeat="marker in markers">
+        {{marker.location.formatted_address}}
+    </li>
+</ul>

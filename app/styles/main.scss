@@ -1,4 +1,8 @@
-@import "components/global";
+@import "compass";
+@import "variables";
+@import "components/reset";
+@import "components/layout";
 @import "components/map";
 @import "components/controls";
+@import "components/destinations";
 
