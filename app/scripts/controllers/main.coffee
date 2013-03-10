@@ -29,9 +29,9 @@ tripPlannerApp.controller 'mainController', ($scope, reverseGeocoder, directions
 
     promise.then (result) ->
       # Hide the first & last markers so that the "A" & "B" directions markers are visible
-      marker.setMap $scope.map for marker in $scope.markers
-      $scope.markers[0].setMap null
-      $scope.markers[$scope.markers.length - 1].setMap null
+      marker.setVisible true for marker in $scope.markers
+      $scope.markers[0].setVisible false
+      $scope.markers[$scope.markers.length - 1].setVisible false
 
       directionsDisplay.setDirections result
     , (reason) ->
