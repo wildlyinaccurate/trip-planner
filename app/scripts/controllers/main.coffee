@@ -20,6 +20,12 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, 
   # Default directions mode
   $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
 
+  $scope.$watch 'directionsMode.value', $scope.updateDirections
+
+  $scope.$watch 'map', (map) ->
+    directionsDisplay.setMap map
+
+  # Update the directions display
   $scope.updateDirections = ->
     return unless $scope.markers.length >= 2
 
@@ -38,6 +44,7 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, 
       , (reason) ->
         $scope.alerts.push "Unable to get directions. #{reason}"
 
+  # Add a marker to the map, based on a click event
   $scope.addMarker = ($event) ->
     marker = new google.maps.Marker({
       map: $scope.map,
@@ -55,17 +62,14 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, 
 
     $scope.updateDirections()
 
+  # Remove marker at position #{index}
   $scope.removeMarker = (index) ->
     marker = $scope.markers.splice(index, 1)[0]
     marker.setMap null
 
     $scope.updateDirections()
 
-  $scope.$watch 'directionsMode.value', $scope.updateDirections
-
-  $scope.$watch 'map', (newValue) ->
-    directionsDisplay.setMap newValue
-
+  # Center the map based on the user's current location
   if (navigator.geolocation)
     navigator.geolocation.getCurrentPosition (position) ->
       $scope.map.panTo new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
