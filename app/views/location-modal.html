@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()" aria-hidden="true">×</button>
+    <h3>Choose location</h3>
+</div>
+<div class="modal-body">
+    <p>We found <b>{{locations.length}}</b> locations that matched <b>{{query}}</b>. Please select the location you meant:
+    <ul>
+        <li ng-repeat="location in locations">
+            <a href="#" ng-click="close(location)">{{location.formatted_address}}</a>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button class="btn" ng-click="close()" aria-hidden="true">Close</button>
+</div>

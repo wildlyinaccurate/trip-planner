@@ -1,5 +1,12 @@
 <h3>Your destinations</h3>
 
+<p class="alert alert-info" ng-show="markers.length == 0">Type a location below or click on the map to add a starting point.</p>
+
+<form class="input-append" ng-submit="addLocation(locationText.value)">
+    <input type="text" ng-model="locationText.value" placeholder="Enter a new location">
+    <button type="submit" class="btn">Add</button>
+</form>
+
 <ul class="destinations" ui-sortable="{ update: updateDirections }" ng-model="markers">
     <li class="destination" ng-repeat="(index, marker) in markers">
         <i class="icon icon-remove" ng-click="removeMarker(index)"></i>

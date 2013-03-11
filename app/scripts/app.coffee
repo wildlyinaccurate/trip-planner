@@ -1,3 +1,3 @@
 'use strict'
 
-window.tripPlannerApp = angular.module('tripPlannerApp', ['ui'])
+window.tripPlannerApp = angular.module 'tripPlannerApp', ['ui', 'ui.bootstrap.dialog']

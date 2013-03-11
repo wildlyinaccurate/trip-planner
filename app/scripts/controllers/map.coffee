@@ -1,9 +1,10 @@
 'use strict'
 
-tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, Geocoder, Directions) ->
+tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $dialog, Geocoder, Directions) ->
 
   $scope.alerts = []
   $scope.markers = []
+  $scope.locationText = value: ''
 
   $scope.mapOptions = {
     center: new google.maps.LatLng(50, 0),
@@ -61,6 +62,22 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, Geocoder, Directions) ->
       $scope.alerts.push "Unable to reverse geocode marker. #{reason}"
 
     $scope.updateDirections()
+
+  $scope.addLocation = (location) ->
+    Geocoder.getLatLng(location).then (results) ->
+      dialog = $dialog.dialog(resolve: {
+        query: ->
+          location
+        locations: ->
+          results
+      })
+
+      promise = dialog.open 'views/location-modal.html', 'LocationModalCtrl'
+
+      promise.then (location) ->
+        $scope.addMarker { latLng: location.geometry.location }
+        $timeout ->
+          $scope.locationText.value = ''
 
   # Remove marker at position #{index}
   $scope.removeMarker = (index) ->
