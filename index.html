@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Trip Planner</title>
+        <meta name="description" content=""/>
+        <meta name="viewport" content="width=device-width"/>
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu"/>
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
+    <body ng-app="tripPlannerApp">
+
+        <!--[if lt IE 9]>
+            <script src="scripts/old-browsers.js"></script>
+        <![endif]-->
+
+        <div class="container" ng-controller="MapCtrl">
+            <div class="google-map" ui-map="map" ui-options="mapOptions" ui-event="{'map-click': 'addMarker($event)'}"></div>
+
+            <div class="controls" resizable="{ handles: 'w' }">
+                <h1>Trip Planner</h1>
+
+                <ul ng-repeat="alert in alerts">
+                    <li class="error">{{alert}}</li>
+                </ul>
+
+                <div ng-include="'views/settings.html'"></div>
+                <div ng-include="'views/destinations.html'"></div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT0HWtijf7Rrp2roAnEqQCdiOTnIA49UM&sensor=true">
+    </script>
+
+        <script src="scripts/scripts.js"></script>
+
+        <script src="scripts/app.js"></script>
+
+        <script>
+            var _gaq=[['_setAccount','UA-38765839-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
