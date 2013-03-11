@@ -1,6 +1,6 @@
 'use strict'
 
-class GeocoderService
+class Geocoder
   constructor: (@$q, @$timeout) ->
     @geocoder = new google.maps.Geocoder()
 
@@ -22,5 +22,5 @@ class GeocoderService
   getLatLng: (location) ->
     @geocode { 'address': location }
 
-tripPlannerApp.factory 'geocoderService', ($timeout, $q) ->
-  new GeocoderService($q, $timeout)
+tripPlannerApp.factory 'Geocoder', ($timeout, $q) ->
+  new Geocoder($q, $timeout)

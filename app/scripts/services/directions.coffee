@@ -1,6 +1,6 @@
 'use strict'
 
-class DirectionsService
+class Directions
   constructor: (@$q, @$timeout) ->
     @directions = new google.maps.DirectionsService()
     @directionsModes = {
@@ -42,5 +42,5 @@ class DirectionsService
 
     deferred.promise
 
-tripPlannerApp.factory 'directionsService', ($timeout, $q) ->
-  new DirectionsService($q, $timeout)
+tripPlannerApp.factory 'Directions', ($timeout, $q) ->
+  new Directions($q, $timeout)

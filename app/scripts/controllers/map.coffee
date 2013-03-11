@@ -1,6 +1,6 @@
 'use strict'
 
-tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, directionsService) ->
+tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, Geocoder, Directions) ->
 
   $scope.alerts = []
   $scope.markers = []
@@ -11,7 +11,7 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, 
     mapTypeId: google.maps.MapTypeId.ROADMAP
   }
 
-  $scope.directionsModes = directionsService.directionsModes
+  $scope.directionsModes = Directions.directionsModes
 
   directionsDisplay = new google.maps.DirectionsRenderer({
     preserveViewport: true
@@ -30,7 +30,7 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, 
     return unless $scope.markers.length >= 2
 
     $timeout ->
-      promise = directionsService.getDirections $scope.markers, {
+      promise = Directions.getDirections $scope.markers, {
         travelMode: $scope.directionsMode.value
       }
 
@@ -53,7 +53,7 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, 
 
     $scope.markers.push marker
 
-    promise = geocoderService.getLocation marker.getPosition()
+    promise = Geocoder.getLocation marker.getPosition()
 
     promise.then (results) ->
       marker.location = results.shift()

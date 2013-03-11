@@ -25,7 +25,7 @@
             <!-- endbuild -->
         <![endif]-->
 
-        <div class="container" ng-controller="mainController">
+        <div class="container" ng-controller="MapCtrl">
             <div class="google-map" ui-map="map" ui-options="mapOptions" ui-event="{'map-click': 'addMarker($event)'}"></div>
 
             <div class="controls" resizable="{ handles: 'w' }">
@@ -63,7 +63,7 @@
         <script src="scripts/directives/resizable.js"></script>
         <script src="scripts/services/geocoder.js"></script>
         <script src="scripts/services/directions.js"></script>
-        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/map.js"></script>
         <!-- endbuild -->
 
         <script>
