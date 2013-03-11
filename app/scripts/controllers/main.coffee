@@ -1,6 +1,6 @@
 'use strict'
 
-tripPlannerApp.controller 'mainController', ($scope, $timeout, reverseGeocoder, directionsService) ->
+tripPlannerApp.controller 'mainController', ($scope, $timeout, geocoderService, directionsService) ->
 
   $scope.alerts = []
   $scope.markers = []
@@ -46,7 +46,7 @@ tripPlannerApp.controller 'mainController', ($scope, $timeout, reverseGeocoder, 
 
     $scope.markers.push marker
 
-    promise = reverseGeocoder.getLocation marker.getPosition()
+    promise = geocoderService.getLocation marker.getPosition()
 
     promise.then (results) ->
       marker.location = results.shift()
