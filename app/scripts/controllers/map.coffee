@@ -1,6 +1,6 @@
 'use strict'
 
-tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $dialog, Geocoder, Directions) ->
+tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, Directions) ->
 
   $scope.alerts = []
   $scope.markers = []
@@ -64,20 +64,26 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $dialog, Geocoder, Direc
     $scope.updateDirections()
 
   $scope.addLocation = (location) ->
-    Geocoder.getLatLng(location).then (results) ->
-      dialog = $dialog.dialog(resolve: {
-        query: ->
-          location
-        locations: ->
-          results
-      })
-
-      promise = dialog.open 'views/location-modal.html', 'LocationModalCtrl'
-
-      promise.then (location) ->
+    addLocationDeferred = $q.defer()
+    addLocationDeferred.promise.then (location) ->
         $scope.addMarker { latLng: location.geometry.location }
         $timeout ->
           $scope.locationText.value = ''
+
+    Geocoder.getLatLng(location).then (results) ->
+      if results.length == 1
+        addLocationDeferred.resolve results[0]
+      else
+        dialog = $dialog.dialog(resolve: {
+          query: ->
+            location
+          locations: ->
+            results
+        })
+
+        promise = dialog.open 'views/location-modal.html', 'LocationModalCtrl'
+        promise.then (location) ->
+          addLocationDeferred.resolve location
 
   # Remove marker at position #{index}
   $scope.removeMarker = (index) ->
