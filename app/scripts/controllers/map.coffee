@@ -21,7 +21,8 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
   # Default directions mode
   $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
 
-  $scope.$watch 'directionsMode.value', $scope.updateDirections
+  $scope.$watch 'directionsMode.value', (directionsMode) ->
+    $scope.updateDirections directionsMode
 
   $scope.$watch 'map', (map) ->
     directionsDisplay.setMap map
