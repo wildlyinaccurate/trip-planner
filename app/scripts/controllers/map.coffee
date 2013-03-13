@@ -29,22 +29,26 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
 
   # Update the directions display
   $scope.updateDirections = ->
-    return unless $scope.markers.length >= 2
+    if $scope.markers.length < 2
+      directionsDisplay.setMap null
+      marker.setVisible true for marker in $scope.markers
+    else
+      $timeout ->
+        promise = Directions.getDirections $scope.markers, {
+          travelMode: $scope.directionsMode.value
+        }
 
-    $timeout ->
-      promise = Directions.getDirections $scope.markers, {
-        travelMode: $scope.directionsMode.value
-      }
+        promise.then (result) ->
+          directionsDisplay.setMap $scope.map
 
-      promise.then (result) ->
-        # Hide the first & last markers so that the "A" & "B" directions markers are visible
-        marker.setVisible true for marker in $scope.markers
-        $scope.markers[0].setVisible false
-        $scope.markers[$scope.markers.length - 1].setVisible false
+          # Hide the first & last markers so that the "A" & "B" directions markers are visible
+          marker.setVisible true for marker in $scope.markers
+          $scope.markers[0].setVisible false
+          $scope.markers[$scope.markers.length - 1].setVisible false
 
-        directionsDisplay.setDirections result
-      , (reason) ->
-        $scope.alerts.push "Unable to get directions. #{reason}"
+          directionsDisplay.setDirections result
+        , (reason) ->
+          $scope.alerts.push "Unable to get directions. #{reason}"
 
   # Add a marker to the map, based on a click event
   $scope.addMarker = ($event) ->

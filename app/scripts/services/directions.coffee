@@ -10,8 +10,6 @@ class Directions
       'Walking': google.maps.TravelMode.WALKING
     }
 
-  setMap: (@map) ->
-
   getDirections: (markers, options) ->
     # Take a copy so we don't modify the original markers array
     markers = markers[..]
