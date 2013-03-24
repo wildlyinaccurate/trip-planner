@@ -13,13 +13,11 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
   }
 
   $scope.directionsModes = Directions.directionsModes
+  $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
 
   directionsDisplay = new google.maps.DirectionsRenderer({
     preserveViewport: true
   })
-
-  # Default directions mode
-  $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
 
   $scope.$watch 'directionsMode.value', (directionsMode) ->
     $scope.updateDirections directionsMode
@@ -68,6 +66,7 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
 
     $scope.updateDirections()
 
+  # Add a marker to the map by typing a location
   $scope.addLocation = (location) ->
     addLocationDeferred = $q.defer()
     addLocationDeferred.promise.then (location) ->
