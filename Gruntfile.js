@@ -26,6 +26,10 @@ module.exports = function (grunt) {
         precacheTemplates: {
             tripPlannerApp: {
                 src: {
+                    'views/alerts.html' : 'app/views/alerts.html',
+                    'views/destinations.html' : 'app/views/destinations.html',
+                    'views/location-modal.html' : 'app/views/location-modal.html',
+                    'views/settings.html' : 'app/views/settings.html',
                     'template/alert/alert.html': 'app/views/template/alert.html'
                 },
                 dest: '.tmp/scripts/templates.js'
