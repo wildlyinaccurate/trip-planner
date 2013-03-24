@@ -58,7 +58,7 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
 }]);
 angular.module("tripPlannerApp").run(["$templateCache", function($templateCache) {
   $templateCache.put("template/alert/alert.html",
-    "<div class='alert' ng-class='type && \"alert-\" + type'>" +
+    "<div class='alert fade in' ng-class='type && \"alert-\" + type'>" +
     "    <button type='button' data-dismiss='alert' class='close' ng-click='close()'>&times;</button>" +
     "    <div ng-transclude></div>" +
     "</div>" +
