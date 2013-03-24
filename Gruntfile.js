@@ -23,6 +23,14 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         yeoman: yeomanConfig,
+        precacheTemplates: {
+            tripPlannerApp: {
+                src: {
+                    'template/alert/alert.html': 'app/views/template/alert.html'
+                },
+                dest: '.tmp/scripts/templates.js'
+            }
+        },
         watch: {
             coffee: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
@@ -236,6 +244,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'precacheTemplates',
             'coffee:dist',
             'compass:server',
             'livereload-start',
@@ -247,6 +256,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'clean:server',
+        'precacheTemplates',
         'coffee',
         'compass',
         'connect:test',
@@ -255,6 +265,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'precacheTemplates',
         'coffee',
         'compass:dist',
         'useminPrepare',
@@ -270,4 +281,30 @@ module.exports = function (grunt) {
         'test',
         'build'
     ]);
+
+    var TPL = 'angular.module("<%= app %>").run(["$templateCache", function($templateCache) {\n' +
+        '  $templateCache.put("<%= file %>",\n    "<%= content %>");\n' +
+        '}]);\n';
+
+    function escapeContent(content) {
+        return content.replace(/"/g, '\\"').replace(/\n/g, '" +\n    "').replace(/\r/g, '');
+    }
+
+    grunt.registerMultiTask('precacheTemplates', 'Compile AngularJS html templates into a single JS file', function() {
+        var config = (grunt.config(this.name)[this.target]);
+        var content = '';
+
+        for (var template in config.src) {
+            content += grunt.template.process(TPL, {
+                data: {
+                    app: this.target,
+                    file: template,
+                    content: escapeContent(grunt.file.read(config.src[template]))
+                }
+            });
+        }
+
+        console.log(content);
+        grunt.file.write(config.dest, content);
+    });
 };

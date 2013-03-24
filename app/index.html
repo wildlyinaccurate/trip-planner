@@ -31,10 +31,7 @@
             <div class="controls" resizable="{ handles: 'w' }">
                 <h1>Trip Planner</h1>
 
-                <ul ng-repeat="alert in alerts">
-                    <li class="error">{{alert}}</li>
-                </ul>
-
+                <div ng-include="'views/alerts.html'"></div>
                 <div ng-include="'views/settings.html'"></div>
                 <div ng-include="'views/destinations.html'"></div>
             </div>
@@ -61,14 +58,17 @@
         <script src="components/angular-ui/modules/directives/sortable/sortable.js"></script>
 
         <script src="components/angular-bootstrap/src/transition/transition.js"></script>
+        <script src="components/angular-bootstrap/src/alert/alert.js"></script>
         <script src="components/angular-bootstrap/src/dialog/dialog.js"></script>
         <script src="components/angular-bootstrap/src/modal/modal.js"></script>
 
+        <script src="components/bootstrap-sass/js/bootstrap-alert.js"></script>
         <script src="components/bootstrap-sass/js/bootstrap-modal.js"></script>
         <!-- endbuild -->
 
         <!-- build:js(.tmp) scripts/app.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/templates.js"></script>
         <script src="scripts/directives/resizable.js"></script>
         <script src="scripts/services/geocoder.js"></script>
         <script src="scripts/services/directions.js"></script>
