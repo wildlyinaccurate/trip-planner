@@ -24,10 +24,7 @@
             <div class="controls" resizable="{ handles: 'w' }">
                 <h1>Trip Planner</h1>
 
-                <ul ng-repeat="alert in alerts">
-                    <li class="error">{{alert}}</li>
-                </ul>
-
+                <div ng-include="'views/alerts.html'"></div>
                 <div ng-include="'views/settings.html'"></div>
                 <div ng-include="'views/destinations.html'"></div>
             </div>

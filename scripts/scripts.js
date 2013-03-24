@@ -9596,7 +9596,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 /*!
- * jQuery UI Core 1.10.1
+ * jQuery UI Core 1.10.2
  * http://jqueryui.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
@@ -9610,16 +9610,11 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 var uuid = 0,
 	runiqueId = /^ui-id-\d+$/;
 
-// prevent duplicate loading
-// this is only a problem because we proxy existing functions
-// and we don't want to double proxy them
+// $.ui might exist from components with no dependencies, e.g., $.ui.position
 $.ui = $.ui || {};
-if ( $.ui.version ) {
-	return;
-}
 
 $.extend( $.ui, {
-	version: "1.10.1",
+	version: "1.10.2",
 
 	keyCode: {
 		BACKSPACE: 8,
@@ -9649,20 +9644,21 @@ $.extend( $.ui, {
 
 // plugins
 $.fn.extend({
-	_focus: $.fn.focus,
-	focus: function( delay, fn ) {
-		return typeof delay === "number" ?
-			this.each(function() {
-				var elem = this;
-				setTimeout(function() {
-					$( elem ).focus();
-					if ( fn ) {
-						fn.call( elem );
-					}
-				}, delay );
-			}) :
-			this._focus.apply( this, arguments );
-	},
+	focus: (function( orig ) {
+		return function( delay, fn ) {
+			return typeof delay === "number" ?
+				this.each(function() {
+					var elem = this;
+					setTimeout(function() {
+						$( elem ).focus();
+						if ( fn ) {
+							fn.call( elem );
+						}
+					}, delay );
+				}) :
+				orig.apply( this, arguments );
+		};
+	})( $.fn.focus ),
 
 	scrollParent: function() {
 		var scrollParent;
@@ -9921,7 +9917,7 @@ $.extend( $.ui, {
 })( jQuery );
 
 /*!
- * jQuery UI Widget 1.10.1
+ * jQuery UI Widget 1.10.2
  * http://jqueryui.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
@@ -10443,7 +10439,7 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 })( jQuery );
 
 /*!
- * jQuery UI Mouse 1.10.1
+ * jQuery UI Mouse 1.10.2
  * http://jqueryui.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
@@ -10463,7 +10459,7 @@ $( document ).mouseup( function() {
 });
 
 $.widget("ui.mouse", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		cancel: "input,textarea,button,select,option",
 		distance: 1,
@@ -10613,7 +10609,7 @@ $.widget("ui.mouse", {
 })(jQuery);
 
 /*!
- * jQuery UI Resizable 1.10.1
+ * jQuery UI Resizable 1.10.2
  * http://jqueryui.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
@@ -10638,7 +10634,7 @@ function isNumber(value) {
 }
 
 $.widget("ui.resizable", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "resize",
 	options: {
 		alsoResize: false,
@@ -11582,7 +11578,7 @@ $.ui.plugin.add("resizable", "grid", {
 })(jQuery);
 
 /*!
- * jQuery UI Sortable 1.10.1
+ * jQuery UI Sortable 1.10.2
  * http://jqueryui.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
@@ -11604,8 +11600,12 @@ function isOverAxis( x, reference, size ) {
 	return ( x > reference ) && ( x < ( reference + size ) );
 }
 
+function isFloating(item) {
+	return (/left|right/).test(item.css("float")) || (/inline|table-cell/).test(item.css("display"));
+}
+
 $.widget("ui.sortable", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "sort",
 	ready: false,
 	options: {
@@ -11656,7 +11656,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		this.refresh();
 
 		//Let's determine if the items are being displayed horizontally
-		this.floating = this.items.length ? o.axis === "x" || (/left|right/).test(this.items[0].item.css("float")) || (/inline|table-cell/).test(this.items[0].item.css("display")) : false;
+		this.floating = this.items.length ? o.axis === "x" || isFloating(this.items[0].item) : false;
 
 		//Let's determine the parent's offset
 		this.offset = this.element.offset();
@@ -11741,7 +11741,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 	_mouseStart: function(event, overrideHandle, noActivation) {
 
-		var i,
+		var i, body,
 			o = this.options;
 
 		this.currentContainer = this;
@@ -11811,11 +11811,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 			this._setContainment();
 		}
 
-		if(o.cursor) { // cursor option
-			if ($("body").css("cursor")) {
-				this._storedCursor = $("body").css("cursor");
-			}
-			$("body").css("cursor", o.cursor);
+		if( o.cursor && o.cursor !== "auto" ) { // cursor option
+			body = this.document.find( "body" );
+
+			// support: IE
+			this.storedCursor = body.css( "cursor" );
+			body.css( "cursor", o.cursor );
+
+			this.storedStylesheet = $( "<style>*{ cursor: "+o.cursor+" !important; }</style>" ).appendTo( body );
 		}
 
 		if(o.opacity) { // opacity option
@@ -12004,14 +12007,18 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 		if(this.options.revert) {
 			var that = this,
-				cur = this.placeholder.offset();
+				cur = this.placeholder.offset(),
+				axis = this.options.axis,
+				animation = {};
 
+			if ( !axis || axis === "x" ) {
+				animation.left = cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollLeft);
+			}
+			if ( !axis || axis === "y" ) {
+				animation.top = cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollTop);
+			}
 			this.reverting = true;
-
-			$(this.helper).animate({
-				left: cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollLeft),
-				top: cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollTop)
-			}, parseInt(this.options.revert, 10) || 500, function() {
+			$(this.helper).animate( animation, parseInt(this.options.revert, 10) || 500, function() {
 				that._clear(event);
 			});
 		} else {
@@ -12332,15 +12339,25 @@ $.widget("ui.sortable", $.ui.mouse, {
 			o.placeholder = {
 				element: function() {
 
-					var el = $(document.createElement(that.currentItem[0].nodeName))
-						.addClass(className || that.currentItem[0].className+" ui-sortable-placeholder")
-						.removeClass("ui-sortable-helper")[0];
+					var nodeName = that.currentItem[0].nodeName.toLowerCase(),
+						element = $( that.document[0].createElement( nodeName ) )
+							.addClass(className || that.currentItem[0].className+" ui-sortable-placeholder")
+							.removeClass("ui-sortable-helper");
 
-					if(!className) {
-						el.style.visibility = "hidden";
+					if ( nodeName === "tr" ) {
+						// Use a high colspan to force the td to expand the full
+						// width of the table (browsers are smart enough to
+						// handle this properly)
+						element.append( "<td colspan='99'>&#160;</td>" );
+					} else if ( nodeName === "img" ) {
+						element.attr( "src", that.currentItem.attr( "src" ) );
 					}
 
-					return el;
+					if ( !className ) {
+						element.css( "visibility", "hidden" );
+					}
+
+					return element;
 				},
 				update: function(container, p) {
 
@@ -12369,7 +12386,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_contactContainers: function(event) {
-		var i, j, dist, itemWithLeastDistance, posProperty, sizeProperty, base, cur, nearBottom,
+		var i, j, dist, itemWithLeastDistance, posProperty, sizeProperty, base, cur, nearBottom, floating,
 			innermostContainer = null,
 			innermostIndex = null;
 
@@ -12408,21 +12425,27 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 		// move the item into the container if it's not there already
 		if(this.containers.length === 1) {
-			this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
-			this.containers[innermostIndex].containerCache.over = 1;
+			if (!this.containers[innermostIndex].containerCache.over) {
+				this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
+				this.containers[innermostIndex].containerCache.over = 1;
+			}
 		} else {
 
 			//When entering a new container, we will find the item with the least distance and append our item near it
 			dist = 10000;
 			itemWithLeastDistance = null;
-			posProperty = this.containers[innermostIndex].floating ? "left" : "top";
-			sizeProperty = this.containers[innermostIndex].floating ? "width" : "height";
+			floating = innermostContainer.floating || isFloating(this.currentItem);
+			posProperty = floating ? "left" : "top";
+			sizeProperty = floating ? "width" : "height";
 			base = this.positionAbs[posProperty] + this.offset.click[posProperty];
 			for (j = this.items.length - 1; j >= 0; j--) {
 				if(!$.contains(this.containers[innermostIndex].element[0], this.items[j].item[0])) {
 					continue;
 				}
 				if(this.items[j].item[0] === this.currentItem[0]) {
+					continue;
+				}
+				if (floating && !isOverAxis(this.positionAbs.top + this.offset.click.top, this.items[j].top, this.items[j].height)) {
 					continue;
 				}
 				cur = this.items[j].item.offset()[posProperty];
@@ -12443,10 +12466,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 				return;
 			}
 
-			this.currentContainer = this.containers[innermostIndex];
+			if(this.currentContainer === this.containers[innermostIndex]) {
+				return;
+			}
+
 			itemWithLeastDistance ? this._rearrange(event, itemWithLeastDistance, null, true) : this._rearrange(event, null, this.containers[innermostIndex].element, true);
 			this._trigger("change", event, this._uiHash());
 			this.containers[innermostIndex]._trigger("change", event, this._uiHash(this));
+			this.currentContainer = this.containers[innermostIndex];
 
 			//Update the placeholder
 			this.options.placeholder.update(this.currentContainer, this.placeholder);
@@ -12761,8 +12788,9 @@ $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		//Do what was originally in plugins
-		if(this._storedCursor) {
-			$("body").css("cursor", this._storedCursor);
+		if ( this.storedCursor ) {
+			this.document.find( "body" ).css( "cursor", this.storedCursor );
+			this.storedStylesheet.remove();
 		}
 		if(this._storedOpacity) {
 			this.helper.css("opacity", this._storedOpacity);
@@ -27922,6 +27950,18 @@ angular.module('ui.bootstrap.transition', [])
   return $transition;
 }]);
 
+angular.module("ui.bootstrap.alert", []).directive('alert', function () {
+  return {
+    restrict:'EA',
+    templateUrl:'template/alert/alert.html',
+    transclude:true,
+    replace:true,
+    scope:{
+      type:'=',
+      close:'&'
+    }
+  };
+});
 // The `$dialogProvider` can be used to configure global defaults for your
 // `$dialog` service.
 var dialogModule = angular.module('ui.bootstrap.dialog', ['ui.bootstrap.transition']);
@@ -28254,6 +28294,105 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.dialog'])
     }
   };
 }]);
+/* ==========================================================
+ * bootstrap-alert.js v2.3.1
+ * http://twitter.github.com/bootstrap/javascript.html#alerts
+ * ==========================================================
+ * Copyright 2012 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
+
+
+!function ($) {
+
+  "use strict"; // jshint ;_;
+
+
+ /* ALERT CLASS DEFINITION
+  * ====================== */
+
+  var dismiss = '[data-dismiss="alert"]'
+    , Alert = function (el) {
+        $(el).on('click', dismiss, this.close)
+      }
+
+  Alert.prototype.close = function (e) {
+    var $this = $(this)
+      , selector = $this.attr('data-target')
+      , $parent
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+    }
+
+    $parent = $(selector)
+
+    e && e.preventDefault()
+
+    $parent.length || ($parent = $this.hasClass('alert') ? $this : $this.parent())
+
+    $parent.trigger(e = $.Event('close'))
+
+    if (e.isDefaultPrevented()) return
+
+    $parent.removeClass('in')
+
+    function removeElement() {
+      $parent
+        .trigger('closed')
+        .remove()
+    }
+
+    $.support.transition && $parent.hasClass('fade') ?
+      $parent.on($.support.transition.end, removeElement) :
+      removeElement()
+  }
+
+
+ /* ALERT PLUGIN DEFINITION
+  * ======================= */
+
+  var old = $.fn.alert
+
+  $.fn.alert = function (option) {
+    return this.each(function () {
+      var $this = $(this)
+        , data = $this.data('alert')
+      if (!data) $this.data('alert', (data = new Alert(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  $.fn.alert.Constructor = Alert
+
+
+ /* ALERT NO CONFLICT
+  * ================= */
+
+  $.fn.alert.noConflict = function () {
+    $.fn.alert = old
+    return this
+  }
+
+
+ /* ALERT DATA-API
+  * ============== */
+
+  $(document).on('click.alert.data-api', dismiss, Alert.prototype.close)
+
+}(window.jQuery);
 /* =========================================================
  * bootstrap-modal.js v2.3.1
  * http://twitter.github.com/bootstrap/javascript.html#modals
