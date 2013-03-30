@@ -47,6 +47,10 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
         promise.then (result) ->
           $scope.legs = result.routes[0].legs
 
+          # Re-calculate the trip time and distance
+          $scope.tripInfo.distance = 0
+          $scope.tripInfo.duration = 0
+
           $scope.tripInfo.distance += leg.distance.value for leg in $scope.legs
           $scope.tripInfo.duration += leg.duration.value for leg in $scope.legs
 
