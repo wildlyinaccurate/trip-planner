@@ -312,6 +312,8 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
           return promise.then(function(result) {
             var leg, _j, _k, _l, _len1, _len2, _len3, _ref1, _ref2, _ref3;
             $scope.legs = result.routes[0].legs;
+            $scope.tripInfo.distance = 0;
+            $scope.tripInfo.duration = 0;
             _ref1 = $scope.legs;
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
               leg = _ref1[_j];
