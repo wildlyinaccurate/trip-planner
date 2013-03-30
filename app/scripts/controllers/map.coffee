@@ -2,9 +2,17 @@
 
 tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, Directions) ->
 
+  $scope.Math = window.Math
+
   $scope.alerts = []
   $scope.markers = []
+  $scope.legs = []
   $scope.locationText = value: ''
+
+  $scope.tripInfo = {
+    duration: null,
+    distance: null
+  }
 
   $scope.mapOptions = {
     center: new google.maps.LatLng(50, 0),
@@ -13,7 +21,7 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
   }
 
   $scope.directionsModes = Directions.directionsModes
-  $scope.directionsMode = { value: $scope.directionsModes['Driving'] }
+  $scope.directionsMode = value: $scope.directionsModes['Driving']
 
   directionsDisplay = new google.maps.DirectionsRenderer({
     preserveViewport: true
@@ -37,6 +45,11 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
         }
 
         promise.then (result) ->
+          $scope.legs = result.routes[0].legs
+
+          $scope.tripInfo.distance += leg.distance.value for leg in $scope.legs
+          $scope.tripInfo.duration += leg.duration.value for leg in $scope.legs
+
           directionsDisplay.setMap $scope.map
 
           # Hide the first & last markers so that the "A" & "B" directions markers are visible

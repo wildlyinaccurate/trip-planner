@@ -26,7 +26,7 @@ class Directions
     for marker in markers
       options.waypoints.push {
         location: marker.getPosition(),
-        stopover: false
+        stopover: true
       }
 
     deferred = @$q.defer()

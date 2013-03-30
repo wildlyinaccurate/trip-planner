@@ -1,11 +1,16 @@
 .destinations {
   .destination {
-    margin: 6px 0;
-    padding: 6px 10px;
+    margin: 10px 0;
+    padding: 12px 10px;
     cursor: move;
     color: $destination-font-colour;
     background: $destination-background;
+
     @include border-radius(4px);
+  }
+
+  .leg-information {
+    text-align: center;
   }
 
   .icon {
@@ -13,6 +18,7 @@
     margin-left: 6px;
     padding: 3px 2px;
     cursor: pointer;
+
     @include border-radius(4px);
   }
 

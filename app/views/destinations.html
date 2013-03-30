@@ -1,4 +1,12 @@
-<h3>Your destinations</h3>
+<h3 ng-show="markers.length">
+    <span ng-pluralize count="markers.length" when="{
+        '1': '{} destination',
+        'other': '{} destinations'
+    }"></span>
+    <span ng-show="tripInfo.distance && tripInfo.duration">
+        ({{Math.round(tripInfo.distance / 1000)}}km, {{tripInfo.duration | prettyTime}})
+    </span>
+</h3>
 
 <p class="alert alert-info" ng-show="markers.length == 0">Type a location below or click on the map to add a starting point.</p>
 
@@ -7,9 +15,15 @@
     <button type="submit" class="btn">Add</button>
 </form>
 
-<ul class="destinations" ui-sortable="{ update: updateDirections }" ng-model="markers">
-    <li class="destination" ng-repeat="(index, marker) in markers">
-        <i class="icon icon-remove" ng-click="removeMarker(index)"></i>
-        {{marker.location.formatted_address}}
-    </li>
-</ul>
+<div class="destinations" ui-sortable="{ update: updateDirections }" ng-model="markers">
+    <div ng-repeat="(index, marker) in markers">
+        <div class="destination">
+            <i class="icon icon-remove" ng-click="removeMarker(index)"></i>
+            {{marker.location.formatted_address}}
+        </div>
+
+        <div class="leg-information" ng-show="legs[index]">
+            {{legs[index].distance.text}}, {{legs[index].duration.text}}
+        </div>
+    </div>
+</div>
