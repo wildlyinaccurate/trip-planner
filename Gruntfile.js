@@ -308,7 +308,6 @@ module.exports = function (grunt) {
             });
         }
 
-        console.log(content);
         grunt.file.write(config.dest, content);
     });
 };
