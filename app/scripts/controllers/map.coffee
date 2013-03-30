@@ -117,3 +117,7 @@ tripPlannerApp.controller 'MapCtrl', ($scope, $timeout, $q, $dialog, Geocoder, D
     , (error) ->
       $scope.alerts.push "We weren't able to determine your current location."
       $scope.$apply()
+
+  # Remove an alert
+  $scope.closeAlert = (index) ->
+    $scope.alerts.splice index, 1

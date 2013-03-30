@@ -30,7 +30,9 @@ module.exports = function (grunt) {
                     'views/destinations.html' : 'app/views/destinations.html',
                     'views/location-modal.html' : 'app/views/location-modal.html',
                     'views/settings.html' : 'app/views/settings.html',
-                    'template/alert/alert.html': 'app/views/template/alert.html'
+                    'template/alert/alert.html': 'app/views/template/alert.html',
+                    'template/tabs/tabs.html': 'app/components/angular-bootstrap/template/tabs/tabs.html',
+                    'template/tabs/pane.html': 'app/components/angular-bootstrap/template/tabs/pane.html'
                 },
                 dest: '.tmp/scripts/templates.js'
             }

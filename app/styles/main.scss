@@ -6,14 +6,16 @@
 
 @import "../components/sass-bootstrap/lib/variables";
 @import "../components/sass-bootstrap/lib/mixins";
+@import "../components/sass-bootstrap/lib/reset";
+@import "../components/sass-bootstrap/lib/scaffolding";
 @import "../components/sass-bootstrap/lib/component-animations";
 @import "../components/sass-bootstrap/lib/alerts";
 @import "../components/sass-bootstrap/lib/buttons";
 @import "../components/sass-bootstrap/lib/close";
 @import "../components/sass-bootstrap/lib/forms";
 @import "../components/sass-bootstrap/lib/modals";
+@import "../components/sass-bootstrap/lib/navs";
 
-@import "components/reset";
 @import "components/global";
 @import "components/layout";
 @import "components/map";

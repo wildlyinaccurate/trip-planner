@@ -31,9 +31,11 @@
             <div class="controls" resizable="{ handles: 'w' }">
                 <h1>Trip Planner</h1>
 
-                <div ng-include="'views/alerts.html'"></div>
-                <div ng-include="'views/settings.html'"></div>
-                <div ng-include="'views/destinations.html'"></div>
+                <tabs>
+                    <pane heading="Planner"><div ng-include="'views/destinations.html'"></div></pane>
+                    <pane heading="Settings"><div ng-include="'views/settings.html'"></div></pane>
+                    <pane heading="Alerts {{alerts.length > 0 && '(' + alerts.length + ')' || ''}}"><div ng-include="'views/alerts.html'"></div></pane>
+                <tabs>
             </div>
         </div>
 
@@ -61,9 +63,11 @@
         <script src="components/angular-bootstrap/src/alert/alert.js"></script>
         <script src="components/angular-bootstrap/src/dialog/dialog.js"></script>
         <script src="components/angular-bootstrap/src/modal/modal.js"></script>
+        <script src="components/angular-bootstrap/src/tabs/tabs.js"></script>
 
         <script src="components/bootstrap-sass/js/bootstrap-alert.js"></script>
         <script src="components/bootstrap-sass/js/bootstrap-modal.js"></script>
+        <script src="components/bootstrap-sass/js/bootstrap-tab.js"></script>
         <script src="components/bootstrap-sass/js/bootstrap-transition.js"></script>
         <!-- endbuild -->
 
