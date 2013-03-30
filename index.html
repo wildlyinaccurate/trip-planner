@@ -24,9 +24,11 @@
             <div class="controls" resizable="{ handles: 'w' }">
                 <h1>Trip Planner</h1>
 
-                <div ng-include="'views/alerts.html'"></div>
-                <div ng-include="'views/settings.html'"></div>
-                <div ng-include="'views/destinations.html'"></div>
+                <tabs>
+                    <pane heading="Planner"><div ng-include="'views/destinations.html'"></div></pane>
+                    <pane heading="Settings"><div ng-include="'views/settings.html'"></div></pane>
+                    <pane heading="Alerts {{alerts.length > 0 && '(' + alerts.length + ')' || ''}}"><div ng-include="'views/alerts.html'"></div></pane>
+                <tabs>
             </div>
         </div>
 

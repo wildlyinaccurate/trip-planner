@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  window.tripPlannerApp = angular.module('tripPlannerApp', ['ui', 'ui.bootstrap.dialog', 'ui.bootstrap.alert']);
+  window.tripPlannerApp = angular.module('tripPlannerApp', ['ui', 'ui.bootstrap.alert', 'ui.bootstrap.dialog', 'ui.bootstrap.tabs']);
 
 }).call(this);
 
@@ -12,7 +12,15 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
 }]);
 angular.module("tripPlannerApp").run(["$templateCache", function($templateCache) {
   $templateCache.put("views/destinations.html",
-    "<h3>Your destinations</h3>" +
+    "<h3 ng-show=\"markers.length\">" +
+    "    <span ng-pluralize count=\"markers.length\" when=\"{" +
+    "        '1': '{} destination'," +
+    "        'other': '{} destinations'" +
+    "    }\"></span>" +
+    "    <span ng-show=\"tripInfo.distance && tripInfo.duration\">" +
+    "        ({{Math.round(tripInfo.distance / 1000)}}km, {{tripInfo.duration | prettyTime}})" +
+    "    </span>" +
+    "</h3>" +
     "" +
     "<p class=\"alert alert-info\" ng-show=\"markers.length == 0\">Type a location below or click on the map to add a starting point.</p>" +
     "" +
@@ -21,12 +29,18 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
     "    <button type=\"submit\" class=\"btn\">Add</button>" +
     "</form>" +
     "" +
-    "<ul class=\"destinations\" ui-sortable=\"{ update: updateDirections }\" ng-model=\"markers\">" +
-    "    <li class=\"destination\" ng-repeat=\"(index, marker) in markers\">" +
-    "        <i class=\"icon icon-remove\" ng-click=\"removeMarker(index)\"></i>" +
-    "        {{marker.location.formatted_address}}" +
-    "    </li>" +
-    "</ul>" +
+    "<div class=\"destinations\" ui-sortable=\"{ update: updateDirections }\" ng-model=\"markers\">" +
+    "    <div ng-repeat=\"(index, marker) in markers\">" +
+    "        <div class=\"destination\">" +
+    "            <i class=\"icon icon-remove\" ng-click=\"removeMarker(index)\"></i>" +
+    "            {{marker.location.formatted_address}}" +
+    "        </div>" +
+    "" +
+    "        <div class=\"leg-information\" ng-show=\"legs[index]\">" +
+    "            {{legs[index].distance.text}}, {{legs[index].duration.text}}" +
+    "        </div>" +
+    "    </div>" +
+    "</div>" +
     "");
 }]);
 angular.module("tripPlannerApp").run(["$templateCache", function($templateCache) {
@@ -64,6 +78,23 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
     "</div>" +
     "");
 }]);
+angular.module("tripPlannerApp").run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/tabs/tabs.html",
+    "<div class=\"tabbable\">" +
+    "  <ul class=\"nav nav-tabs\">" +
+    "    <li ng-repeat=\"pane in panes\" ng-class=\"{active:pane.selected}\">" +
+    "      <a href=\"\" ng-click=\"select(pane)\">{{pane.heading}}</a>" +
+    "    </li>" +
+    "  </ul>" +
+    "  <div class=\"tab-content\" ng-transclude></div>" +
+    "</div>" +
+    "");
+}]);
+angular.module("tripPlannerApp").run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/tabs/pane.html",
+    "<div class=\"tab-pane\" ng-class=\"{active: selected}\" ng-show=\"selected\" ng-transclude></div>" +
+    "");
+}]);
 
 (function() {
   'use strict';
@@ -75,6 +106,29 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
         options = angular.extend({}, scope.$eval(attrs.resizable));
         return element.resizable(options);
       }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  'use strict';
+
+  tripPlannerApp.filter('prettyTime', function() {
+    return function(seconds) {
+      var pretty;
+      return pretty = (function() {
+        switch (false) {
+          case !(seconds >= 108000):
+            return Math.round(seconds / 86400, 1) + ' days';
+          case !(seconds >= 3600):
+            return Math.round(seconds / 3600, 1) + ' hours';
+          case !(seconds >= 60):
+            return Math.round(seconds / 60) + ' minutes';
+          default:
+            return seconds + ' seconds';
+        }
+      })();
     };
   });
 
@@ -165,7 +219,7 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
         marker = markers[_i];
         options.waypoints.push({
           location: marker.getPosition(),
-          stopover: false
+          stopover: true
         });
       }
       deferred = this.$q.defer();
@@ -209,10 +263,16 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
 
   tripPlannerApp.controller('MapCtrl', function($scope, $timeout, $q, $dialog, Geocoder, Directions) {
     var directionsDisplay;
+    $scope.Math = window.Math;
     $scope.alerts = [];
     $scope.markers = [];
+    $scope.legs = [];
     $scope.locationText = {
       value: ''
+    };
+    $scope.tripInfo = {
+      duration: null,
+      distance: null
     };
     $scope.mapOptions = {
       center: new google.maps.LatLng(50, 0),
@@ -250,11 +310,22 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
             travelMode: $scope.directionsMode.value
           });
           return promise.then(function(result) {
-            var _j, _len1, _ref1;
-            directionsDisplay.setMap($scope.map);
-            _ref1 = $scope.markers;
+            var leg, _j, _k, _l, _len1, _len2, _len3, _ref1, _ref2, _ref3;
+            $scope.legs = result.routes[0].legs;
+            _ref1 = $scope.legs;
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              marker = _ref1[_j];
+              leg = _ref1[_j];
+              $scope.tripInfo.distance += leg.distance.value;
+            }
+            _ref2 = $scope.legs;
+            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+              leg = _ref2[_k];
+              $scope.tripInfo.duration += leg.duration.value;
+            }
+            directionsDisplay.setMap($scope.map);
+            _ref3 = $scope.markers;
+            for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+              marker = _ref3[_l];
               marker.setVisible(true);
             }
             $scope.markers[0].setVisible(false);
@@ -321,7 +392,7 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
       return $scope.updateDirections();
     };
     if (navigator.geolocation) {
-      return navigator.geolocation.getCurrentPosition(function(position) {
+      navigator.geolocation.getCurrentPosition(function(position) {
         $scope.map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
         return $scope.$apply();
       }, function(error) {
@@ -329,6 +400,9 @@ angular.module("tripPlannerApp").run(["$templateCache", function($templateCache)
         return $scope.$apply();
       });
     }
+    return $scope.closeAlert = function(index) {
+      return $scope.alerts.splice(index, 1);
+    };
   });
 
 }).call(this);
